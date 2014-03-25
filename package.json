@@ -1,0 +1,24 @@
+{
+  "name": "fb-guess",
+  "version": "0.0.1",
+  "description": "Guess who likes what",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Patrik Spathon <patrik@spathon.com>",
+  "dependencies" : {
+    "koa": "0.5.x",
+    "koa-etag": "*",
+    "koa-favicon": "*",
+    "koa-compress": "*",
+    "koa-router": "3.x",
+    "koa-views": "*",
+    "koa-static": "*",
+    "stylus": "*",
+    "koa-stylus": "*",
+    "nib": "*",
+    "mongoose": "3.x",
+    "jade": "1.3.x"
+  }
+}

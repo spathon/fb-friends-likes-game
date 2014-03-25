@@ -1,0 +1,30 @@
+.box
+  h2 Let's play {{user.name}}!
+
+  .msg {{loadMsg}}
+
+.game
+  .row.who
+    .col-sm-8
+      h2 Who
+    .col-sm-4
+      h2 Liked
+  .row
+    .friend.col-sm-4(ng-click="guess($index)", ng-repeat="friend in final_friends")
+      h4.title {{ friend.name }}
+      .box
+        img(
+          ng-src="https://graph.facebook.com/{{friend.id}}/picture?width=218&height=218",
+          ng-if="friend.id"
+        )
+    .the-like.col-sm-4
+      h4.title
+        .pull-right.info I
+          .hint {{ final_like.category }}
+        | {{final_like.name}}
+      .box
+        img(
+          ng-src="https://graph.facebook.com/{{final_like.id}}/picture?width=218&height=218",
+          ng-if="final_like.id"
+        )
+
