@@ -118,10 +118,45 @@ io.on('connection', function(socket){
     // https://github.com/Thuzi/facebook-node-sdk/
     FB.setAccessToken(data.authResponse.accessToken);
     FB.api('me', function (res) {
-      //console.log(res);
-      console.log('Yay FB');
+
+      console.log('Yay FB: ', res.id);
+      var user = {};
+      mongo.User.find({ fb_id: res.id }, function(err, data){
+        console.log('Mongo: ', data);
+        console.log(err);
+        if(!data.length){
+          user = new mongo.User({
+            name: res.name,
+            fb_id: res.id
+          });
+          user.save(function(err){
+            if(err) console.log('Create user error: ', err);
+            else console.log('User created: ', user);
+          });
+        }else{
+          user = data;
+        }
+      });
     });
   });
+
+  socket.on('guess', function (data){
+    // console.log(data);
+    var guess_data = {
+      responder_user_id: data.user.id, // The user
+      friend_ids: data.friends.map(function(friend){ return friend.id }),
+      like_id: data.like.id,
+      correct_friend_id: data.friends[data.correct].id,
+      answer_friend_id: data.friends[data.answer].id,
+      answer_was_correct: (data.answer === data.correct)
+    };
+
+    console.log(guess);
+    var guess = new mongo.Guess(guess_data);
+    guess.save();
+    socket.emit('guess_cb', { success: ':)' });
+  });
+
 });
 
 

@@ -143,6 +143,16 @@ function PlayCtrl($scope, $rootScope, Facebook, $location, Game, $q, $timeout, s
 
 
   $scope.guess = function(value){
+
+    socket.emit('guess', {
+      user: $scope.user,
+      friends: $scope.final_friends,
+      like: $scope.final_like,
+      correct: $scope.correct,
+      answer: value
+    });
+
+
     if($scope.correct == value){
       $rootScope.modalMsg = { type: 'right', msg: 'Yay, correct!' };
     }else{
