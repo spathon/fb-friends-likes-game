@@ -1,19 +1,10 @@
-// http://www.colourlovers.com/palette/147033/Icing_on_the_Cake
 
 @import "bootstrap/bootstrap"
 
-//@import "mixins"
+@import "vars"
+@import "mixins"
 @import "tags"
 @import "helpers"
-
-ba(top = auto, right = auto, bottom = auto, right = auto)
-  position absolute
-  top top
-  right right
-  bottom bottom
-  left left
-  content "\0020"
-  display block
 
 
 .container
@@ -30,11 +21,12 @@ ba(top = auto, right = auto, bottom = auto, right = auto)
   color: #777
 
 .title
-  background #99D1B7
-  text-shadow 1px 1px 0 #79b197
+  background $green
+  text-shadow 1px 1px 0 $darkGreen
   color #fff
   font-size 20px
-  border 1px solid #89c1a7
+  border 1px solid $darkGreen
+  // #89c1a7
   padding 10px
   border-radius 3px 3px 0 0
   margin 0
@@ -44,12 +36,10 @@ ba(top = auto, right = auto, bottom = auto, right = auto)
 .box
   background #fff
   border 1px solid #bbb
-  border-radius 3px
+  border-top none
+  border-radius 0 0 3px 3px
   padding 10px
 
-.title ~ .box
-  border-radius 0 0 3px 3px
-  border-top none
 
 
 .btn
@@ -104,9 +94,9 @@ ba(top = auto, right = auto, bottom = auto, right = auto)
     transition all .2s
     cursor pointer
   .title
-    background #a6cedd
-    border-color #86aebd
-    text-shadow 1px 1px 0 #86aebd
+    background $blue
+    border-color $darkBlue
+    text-shadow 1px 1px 0 $darkBlue
 
 .friend:hover
   .title
@@ -188,11 +178,11 @@ ba(top = auto, right = auto, bottom = auto, right = auto)
   color #fff
 
 .modal-right
-  background #99D1B7
-  border-color #79b197
-  text-shadow 1px 1px #79b197
+  background $green
+  border-color $darkGreen
+  text-shadow 1px 1px $darkGreen
 
 .modal-wrong
-  background #F79273
-  border-color #d77253
-  text-shadow 1px 1px #d77253
+  background $red
+  border-color $darkRed
+  text-shadow 1px 1px $darkRed

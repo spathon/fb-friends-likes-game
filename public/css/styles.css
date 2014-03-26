@@ -1679,10 +1679,10 @@ img {
 }
 .title {
   background: #99d1b7;
-  text-shadow: 1px 1px 0 #79b197;
+  text-shadow: 1px 1px 0 #67ba94;
   color: #fff;
   font-size: 20px;
-  border: 1px solid #89c1a7;
+  border: 1px solid #67ba94;
   padding: 10px;
   -webkit-border-radius: 3px 3px 0 0;
   border-radius: 3px 3px 0 0;
@@ -1692,14 +1692,10 @@ img {
 .box {
   background: #fff;
   border: 1px solid #bbb;
-  -webkit-border-radius: 3px;
-  border-radius: 3px;
-  padding: 10px;
-}
-.title ~ .box {
+  border-top: none;
   -webkit-border-radius: 0 0 3px 3px;
   border-radius: 0 0 3px 3px;
-  border-top: none;
+  padding: 10px;
 }
 .btn {
   padding: 5px 7px;
@@ -1762,8 +1758,8 @@ img {
 }
 .friend .title {
   background: #a6cedd;
-  border-color: #86aebd;
-  text-shadow: 1px 1px 0 #86aebd;
+  border-color: #6eafc8;
+  text-shadow: 1px 1px 0 #6eafc8;
 }
 .friend:hover .title {
   background: #96becd;
@@ -1871,11 +1867,11 @@ img {
 }
 .modal-right {
   background: #99d1b7;
-  border-color: #79b197;
-  text-shadow: 1px 1px #79b197;
+  border-color: #67ba94;
+  text-shadow: 1px 1px #67ba94;
 }
 .modal-wrong {
   background: #f79273;
-  border-color: #d77253;
-  text-shadow: 1px 1px #d77253;
+  border-color: #f35d2f;
+  text-shadow: 1px 1px #f35d2f;
 }

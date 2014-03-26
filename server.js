@@ -105,7 +105,8 @@ io.on('connection', function(socket){
     // https://github.com/Thuzi/facebook-node-sdk/
     FB.setAccessToken(data.authResponse.accessToken);
     FB.api('me', function (res) {
-      console.log(res);
+      //console.log(res);
+      console.log('Yay FB');
     });
   });
 });
