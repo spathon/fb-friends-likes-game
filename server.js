@@ -11,7 +11,8 @@ var koa = require('koa'),
     views = require('koa-views'),
 
     // db
-    mongoose = require('mongoose'),
+    //mongoose = require('mongoose'),
+    mongo = require('./lib/mongoose-models'),
 
     // Other
     FB = require('fb'),
@@ -56,9 +57,9 @@ app.use(function *(next){
   console.log('%s %s - %s', this.method, this.url, ms);
 });
 
-// Connect to db
-mongoose.connect('mongodb://localhost/guess');
 
+// mongoose.connect('mongodb://localhost/guess');
+// var User = mongoose.model('User', { name: String });
 
 // Router
 // https://github.com/alexmingoia/koa-router
@@ -89,6 +90,18 @@ app.get('/partial/play', function *(next){
   yield this.render('partials/play', { my: 'data' });
 });
 
+
+app.get('/moon', function *(next){
+
+  // console.log(mongo);
+
+  var kitty = new mongo.Guessing({ name: 'Zildjian', result: true });
+  kitty.save(function (err) {
+    if (err) console.log(err);
+    console.log('meow');
+  });
+  this.body = 'Hello there';
+});
 
 /**
  * Socket.io
