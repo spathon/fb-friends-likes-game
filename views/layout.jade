@@ -9,6 +9,9 @@ html(ng-app="knowYourFriends")
     link(href='http://fonts.googleapis.com/css?family=Source+Sans+Pro:400,600,700', rel='stylesheet', type='text/css')
     link(rel="stylesheet", href="/css/styles.css")
 
+    //- Socket.io
+    script(src="/socket.io/socket.io.js")
+
     //- Angular
     script(src="/lib/angular.min.js")
     script(src="/lib/angular/angular-route.min.js")
@@ -19,6 +22,7 @@ html(ng-app="knowYourFriends")
 
     //- Services
     script(src="/js/game.js")
+    script(src="/js/services/socket.js")
 
     //- Controllers
     script(src="/js/controllers/HomeCtrl.js")
@@ -26,8 +30,6 @@ html(ng-app="knowYourFriends")
 
     script(src="/js/app.js")
 
-    script(src="/socket.io/socket.io.js")
-    script(src="/js/socket.js")
   body
     .container
       .header.title Do you know what your friends&nbsp;

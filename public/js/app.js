@@ -1,6 +1,11 @@
 
 
-var app = angular.module('knowYourFriends', ['ngRoute', 'facebook', 'knowYourFriends.game']);
+var app = angular.module('knowYourFriends', [
+  'ngRoute',
+  'facebook',
+  'knowYourFriends.game',
+  'knowYourFriends.socket'
+]);
 
 
 app.config(['FacebookProvider', function(FacebookProvider) {

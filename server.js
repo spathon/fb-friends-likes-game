@@ -13,6 +13,9 @@ var koa = require('koa'),
     // db
     mongoose = require('mongoose'),
 
+    // Other
+    FB = require('fb'),
+
     // Extend
     compress = require('koa-compress'),
     favicon = require('koa-favicon'),
@@ -90,10 +93,20 @@ app.get('/partial/play', function *(next){
 /**
  * Socket.io
  */
+// http://www.html5rocks.com/en/tutorials/frameworks/angular-websockets/
 io.on('connection', function(socket){
   socket.emit('news', { hello: 'world' });
   socket.on('my other event', function (data) {
     console.log(data);
+  });
+
+  socket.on('FB', function (data){
+    // console.log('fb', data);
+    // https://github.com/Thuzi/facebook-node-sdk/
+    FB.setAccessToken(data.authResponse.accessToken);
+    FB.api('me', function (res) {
+      console.log(res);
+    });
   });
 });
 

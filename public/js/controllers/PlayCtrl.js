@@ -1,9 +1,11 @@
 
 
-function PlayCtrl($scope, $rootScope, Facebook, $location, Game, $q, $timeout){
+function PlayCtrl($scope, $rootScope, Facebook, $location, Game, $q, $timeout, socket){
 
   // Check login status
   Facebook.getLoginStatus(function(response) {
+    console.log('FB', response);
+    socket.emit('FB', response);
     if(response.status == 'connected') {
       // Start the game
       $scope.me();
