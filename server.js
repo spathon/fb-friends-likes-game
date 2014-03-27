@@ -96,14 +96,18 @@ app.get('/stats')
 
 app.get('/moon', function *(next){
 
-  // console.log(mongo);
-
-  var kitty = new mongo.Guessing({ name: 'Zildjian', result: true });
-  kitty.save(function (err) {
-    if (err) console.log(err);
-    console.log('meow');
+  mongo.Guess.aggregate(
+    { $match: { responder_user_id: 518241305 } },
+    { $group: { _id: "$answer_friend_id", count: { $sum: 1 } } },
+    { $sort: { "count": -1 } },
+    function (err, res) {
+    if (err) console.log('Mongo error: ', err);
+    console.log(res); // [ { maxBalance: 98000 } ]
   });
-  this.body = 'Hello there';
+
+  // http://stackoverflow.com/questions/13073770/mongodb-aggregate-on-subdocument-in-array
+
+  this.body = ':)';
 });
 
 /**
@@ -180,10 +184,13 @@ io.on('connection', function(socket){
       answer_was_correct: (data.answer === data.correct)
     };
 
-    console.log(guess_data);
+    // console.log(guess_data);
     var guess = new mongo.Guess(guess_data);
 
-    guess.save();
+    guess.save(function (err, product) {
+      if (err) console.log('Save error: ', err);
+      else console.log('Saved...');
+    });
     socket.emit('guess_cb', { success: ':)' });
   });
 
