@@ -155,9 +155,15 @@ function PlayCtrl($scope, $rootScope, Facebook, $location, Game, $q, $timeout, s
 
     if($scope.correct == value){
       $rootScope.modalMsg = { type: 'right', msg: 'Yay, correct!' };
+
+      // update the right count
+      $scope.guesses.right++;
     }else{
       $rootScope.modalMsg = { type: 'wrong', msg: 'To bad, wrong answer!' };
     }
+
+    // Update the total count
+    $scope.guesses.total++;
 
     $scope.start();
 

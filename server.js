@@ -90,6 +90,9 @@ app.get('/partial/play', function *(next){
   yield this.render('partials/play', { my: 'data' });
 });
 
+// API
+app.get('/stats')
+
 
 app.get('/moon', function *(next){
 
@@ -108,42 +111,68 @@ app.get('/moon', function *(next){
  */
 // http://www.html5rocks.com/en/tutorials/frameworks/angular-websockets/
 io.on('connection', function(socket){
+
+  var fb_id = false;
+
+
   socket.emit('news', { hello: 'world' });
   socket.on('my other event', function (data) {
     console.log(data);
   });
 
+  // Set the users id
   socket.on('FB', function (data){
     // console.log('fb', data);
     // https://github.com/Thuzi/facebook-node-sdk/
     FB.setAccessToken(data.authResponse.accessToken);
-    FB.api('me', function (res) {
+    FB.api('me', function (response) {
 
-      console.log('Yay FB: ', res.id);
-      var user = {};
-      mongo.User.find({ fb_id: res.id }, function(err, data){
-        console.log('Mongo: ', data);
-        console.log(err);
-        if(!data.length){
-          user = new mongo.User({
-            name: res.name,
-            fb_id: res.id
+      if(response && !response.error) {
+        fb_id = response.id;
+
+        // Count times answerd
+        mongo.Guess.count({ responder_user_id: response.id }, function(err, total){
+
+          console.log('Total: ', total);
+          // Count number of times answered right
+          mongo.Guess.count({ responder_user_id: response.id,  answer_was_correct: true }, function(err, right){
+            console.log('Right: ', right);
+            socket.emit('guesses', { total: total, right: right });
           });
-          user.save(function(err){
-            if(err) console.log('Create user error: ', err);
-            else console.log('User created: ', user);
-          });
-        }else{
-          user = data;
-        }
-      });
+        });
+      }
+
+      // console.log('Yay FB: ', res.id);
+      // var user = {};
+      // mongo.User.find({ fb_id: res.id }, function(err, data){
+      //   console.log('Mongo: ', data);
+      //   console.log(err);
+      //   if(!data.length){
+      //     user = new mongo.User({
+      //       name: res.name,
+      //       fb_id: res.id
+      //     });
+      //     user.save(function(err){
+      //       if(err) console.log('Create user error: ', err);
+      //       else console.log('User created: ', user);
+      //     });
+      //   }else{
+      //     user = data;
+      //   }
+      // });
     });
   });
 
   socket.on('guess', function (data){
+
+    if(!fb_id) {
+      socket.emit('guess_no_user', { success: 'Darn' });
+      return;
+    }
+
     // console.log(data);
     var guess_data = {
-      responder_user_id: data.user.id, // The user
+      responder_user_id: fb_id,
       friend_ids: data.friends.map(function(friend){ return friend.id }),
       like_id: data.like.id,
       correct_friend_id: data.friends[data.correct].id,
@@ -151,8 +180,9 @@ io.on('connection', function(socket){
       answer_was_correct: (data.answer === data.correct)
     };
 
-    console.log(guess);
+    console.log(guess_data);
     var guess = new mongo.Guess(guess_data);
+
     guess.save();
     socket.emit('guess_cb', { success: ':)' });
   });

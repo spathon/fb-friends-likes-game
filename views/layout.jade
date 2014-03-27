@@ -25,17 +25,18 @@ html(ng-app="knowYourFriends")
     script(src="/js/services/socket.js")
 
     //- Controllers
+    script(src="/js/controllers/MainCtrl.js")
     script(src="/js/controllers/HomeCtrl.js")
     script(src="/js/controllers/PlayCtrl.js")
 
     script(src="/js/app.js")
 
-  body
+  body(ng-controller="MainCtrl")
     .container
       .header.title Do you know what your friends&nbsp;
         img.like-icon(src="images/like_icon.png")
         | ?
-        .score.pull-right 104/342
+        .score.pull-right {{ guesses.right }}/{{ guesses.total }}
 
 
       div(ng-view)
