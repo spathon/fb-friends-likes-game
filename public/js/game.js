@@ -2,8 +2,8 @@
 var game = angular.module('knowYourFriends.game', []).
   factory('Game', function ($q, $rootScope, Facebook){
     return {
-      _friends: false,
-      friends: function(){
+      all_friends: false,
+      getFriends: function(){
         var q = $q.defer();
         if(this._friends){
           q.resolve(this._friends);
@@ -26,12 +26,3 @@ var game = angular.module('knowYourFriends.game', []).
       }
     }
   });
-
-
-game.factory('GameData', function (){
-    return {
-      friends: {}
-    };
-  });
-
-

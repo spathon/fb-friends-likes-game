@@ -57,10 +57,6 @@ app.use(function *(next){
   console.log('%s %s - %s', this.method, this.url, ms);
 });
 
-
-// mongoose.connect('mongodb://localhost/guess');
-// var User = mongoose.model('User', { name: String });
-
 // Router
 // https://github.com/alexmingoia/koa-router
 app.use(router(app));
@@ -79,21 +75,21 @@ var server = require('http').Server(app.callback()),
  * Routes
  */
 app.get('/', function *(next) {
-  yield this.render('index', { my: 'data' });
+  yield this.render('index');
 });
 
 app.get('/partial/home', function *(next){
-  yield this.render('partials/home', { my: 'data' });
+  yield this.render('partials/home');
 });
 
 app.get('/partial/play', function *(next){
-  yield this.render('partials/play', { my: 'data' });
+  yield this.render('partials/play');
 });
 
 // API
-app.get('/stats')
+// app.get('/stats')
 
-
+// Test
 app.get('/moon', function *(next){
 
   mongo.Guess.aggregate(
@@ -104,11 +100,11 @@ app.get('/moon', function *(next){
     if (err) console.log('Mongo error: ', err);
     console.log(res); // [ { maxBalance: 98000 } ]
   });
-
   // http://stackoverflow.com/questions/13073770/mongodb-aggregate-on-subdocument-in-array
-
   this.body = ':)';
 });
+
+
 
 /**
  * Socket.io
@@ -116,17 +112,12 @@ app.get('/moon', function *(next){
 // http://www.html5rocks.com/en/tutorials/frameworks/angular-websockets/
 io.on('connection', function(socket){
 
+  // Set the users ID
   var fb_id = false;
-
-
-  socket.emit('news', { hello: 'world' });
-  socket.on('my other event', function (data) {
-    console.log(data);
-  });
 
   // Set the users id
   socket.on('FB', function (data){
-    // console.log('fb', data);
+
     // https://github.com/Thuzi/facebook-node-sdk/
     FB.setAccessToken(data.authResponse.accessToken);
     FB.api('me', function (response) {
@@ -145,28 +136,10 @@ io.on('connection', function(socket){
           });
         });
       }
-
-      // console.log('Yay FB: ', res.id);
-      // var user = {};
-      // mongo.User.find({ fb_id: res.id }, function(err, data){
-      //   console.log('Mongo: ', data);
-      //   console.log(err);
-      //   if(!data.length){
-      //     user = new mongo.User({
-      //       name: res.name,
-      //       fb_id: res.id
-      //     });
-      //     user.save(function(err){
-      //       if(err) console.log('Create user error: ', err);
-      //       else console.log('User created: ', user);
-      //     });
-      //   }else{
-      //     user = data;
-      //   }
-      // });
     });
   });
 
+  // save the guess
   socket.on('guess', function (data){
 
     if(!fb_id) {
@@ -176,7 +149,7 @@ io.on('connection', function(socket){
 
     // console.log(data);
     var guess_data = {
-      responder_user_id: fb_id,
+      fb_id: fb_id,
       friend_ids: data.friends.map(function(friend){ return friend.id }),
       like_id: data.like.id,
       correct_friend_id: data.friends[data.correct].id,
@@ -201,4 +174,4 @@ io.on('connection', function(socket){
 
 //server.listen(3001);
 server.listen(1337);
-console.info('Now running on localhost:3000 and 1337 the last is just because I can.');
+console.info('Now running on localhost:1337. Let\'s play!');

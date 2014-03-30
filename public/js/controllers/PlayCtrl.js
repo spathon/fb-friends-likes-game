@@ -1,10 +1,9 @@
-
+// TODO: handle errors in callbacks and FB responses
 
 function PlayCtrl($scope, $rootScope, Facebook, $location, Game, $q, $timeout, socket){
 
   // Check login status
   Facebook.getLoginStatus(function(response) {
-    console.log('FB', response);
     socket.emit('FB', response);
     if(response.status == 'connected') {
       // Start the game
@@ -28,24 +27,24 @@ function PlayCtrl($scope, $rootScope, Facebook, $location, Game, $q, $timeout, s
 
     // Get friends
     $scope.loadMsg = 'Gathering friends...';
-    Game.friends().then(function(resp){
+    Game.getFriends().then(function(resp){
 
       console.log('Init..');
-      $scope.friends = [];
+      Game.friends = [];
 
       var friends_count = resp.data.length;
 
-      $scope.all_friends = resp.data;
+      Game.all_friends = resp.data;
       // retrive random friend index
       var friend_one_index = _.random(0, friends_count-1),
           friend_two_index = _.random(0, friends_count-1);
 
       // Prevent both friends to be the same person
-      while($scope.friend_one == $scope.friend_two){
-        $scope.friend_two = _.random(0, friends_count-1);
+      while(friend_one_index == friend_two_index){
+        friend_two_index = _.random(0, friends_count-1);
       }
-      $scope.friends.push($scope.all_friends[friend_one_index]);
-      $scope.friends.push($scope.all_friends[friend_two_index]);
+      Game.friends.push(Game.all_friends[friend_one_index]);
+      Game.friends.push(Game.all_friends[friend_two_index]);
 
       // Show status message
       $scope.loadMsg = friends_count +' friends gathered. Selecting 2 random friends...';
@@ -58,22 +57,28 @@ function PlayCtrl($scope, $rootScope, Facebook, $location, Game, $q, $timeout, s
   $scope.getALike = function(){
 
     // Get the users likes (promise)
-    var friend_one_likes_promise = Game.likes($scope.friends[0]),
-        friend_two_likes_promise = Game.likes($scope.friends[1]);
+    var friend_one_likes_promise = Game.likes(Game.friends[0]),
+        friend_two_likes_promise = Game.likes(Game.friends[1]);
 
     // Wait for the likes to load
     $q.all([friend_one_likes_promise, friend_two_likes_promise]).then(function(res) {
 
-      // Set the likes on the friend variable
-      $scope.friends[0].likes = res[0].data;
-      $scope.friends[1].likes = res[1].data;
+      // If any like request is undefined retart
+      if(_.isUndefined(res[0].data) || _.isUndefined(res[1].data)){
+        $scope.start();
+        return;
+      }
 
-      console.log($scope.friends[0].name, $scope.friends[0].likes.length);
-      console.log($scope.friends[1].name, $scope.friends[1].likes.length);
+      // Set the likes on the friend variable
+      Game.friends[0].likes = res[0].data;
+      Game.friends[1].likes = res[1].data;
+
+      console.log(Game.friends[0].name, Game.friends[0].likes.length);
+      console.log(Game.friends[1].name, Game.friends[1].likes.length);
 
       // If one of them don't have any likes start over
       // TODO: think if one have 0 use it anyway
-      if($scope.friends[0].likes.length == 0 || $scope.friends[1].likes.length == 0){
+      if(Game.friends[0].likes.length == 0 || Game.friends[1].likes.length == 0){
         return $scope.start();
       }
 
@@ -90,8 +95,8 @@ function PlayCtrl($scope, $rootScope, Facebook, $location, Game, $q, $timeout, s
     // get one of the user on random to be correct
     $scope.correct = _.random(0,1);
     $scope.wrong = ($scope.correct === 1) ? 0 : 1;
-    var likes = $scope.friends[$scope.correct].likes,
-        opposite_likes = $scope.friends[$scope.wrong].likes;
+    var likes = Game.friends[$scope.correct].likes,
+        opposite_likes = Game.friends[$scope.wrong].likes;
 
     $scope.the_like = false; // The unique like to show
 
@@ -101,7 +106,7 @@ function PlayCtrl($scope, $rootScope, Facebook, $location, Game, $q, $timeout, s
 
       // If no like was unique restart
       if(!likes.length) {
-        //$scope.start();
+        $scope.start();
         break;
       }
 
@@ -134,10 +139,10 @@ function PlayCtrl($scope, $rootScope, Facebook, $location, Game, $q, $timeout, s
 
   $scope.letsPlay = function(){
     console.log('The like: ', $scope.the_like);
-    console.log('Friends: ', $scope.friends);
+    // console.log('Friends: ', Game.friends);
 
     $scope.final_like = $scope.the_like;
-    $scope.final_friends = $scope.friends;
+    $scope.final_friends = Game.friends;
   };
 
 
