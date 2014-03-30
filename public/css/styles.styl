@@ -49,16 +49,20 @@
   display inline-block
 
 .btn-fb
-  background #a6cedd
-  border-color #86aebd
+  background #3b5998
+  border-color darken(#3b5998, 20%)
+  text-shadow 1px 1px 0 black
   color #fff
-  text-shadow 1px 1px 0 #86aebd
   font-size 25px
+  span
+    transition all .4s
 
 .btn-fb:hover
-  background #86aebd
-  border-color #769ead
-  color #000
+  background darken(#3b5998, 20%)
+  border-color darken(#3b5998, 30%)
+  color #fff
+  span
+    padding-left 10px
 
 
 
@@ -81,7 +85,8 @@
   z-index 1
 
 
-
+.game
+  word-wrap break-word
 .game img
   width 100%
   display block

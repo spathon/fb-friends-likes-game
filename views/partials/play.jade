@@ -10,7 +10,7 @@
     .col-xs-4
       h2 Liked
   .row
-    .friend.col-xs-4(ng-click="guess($index)", ng-repeat="friend in final_friends")
+    .friend.col-xs-4(ng-click="guess($index)", ng-show="friend.id", ng-repeat="friend in final_friends")
       h4.title {{ friend.name }}
       .box
         img(
