@@ -118,6 +118,10 @@ io.on('connection', function(socket){
   // Set the users id
   socket.on('FB', function (data){
 
+    if(!data.authResponse){
+      return false;
+    }
+
     // https://github.com/Thuzi/facebook-node-sdk/
     FB.setAccessToken(data.authResponse.accessToken);
     FB.api('me', function (response) {
@@ -126,11 +130,11 @@ io.on('connection', function(socket){
         fb_id = response.id;
 
         // Count times answerd
-        mongo.Guess.count({ responder_user_id: response.id }, function(err, total){
+        mongo.Guess.count({ fb_id: response.id }, function(err, total){
 
           console.log('Total: ', total);
           // Count number of times answered right
-          mongo.Guess.count({ responder_user_id: response.id,  answer_was_correct: true }, function(err, right){
+          mongo.Guess.count({ fb_id: response.id,  answer_was_correct: true }, function(err, right){
             console.log('Right: ', right);
             socket.emit('guesses', { total: total, right: right });
           });
@@ -142,7 +146,7 @@ io.on('connection', function(socket){
   // save the guess
   socket.on('guess', function (data){
 
-    if(!fb_id) {
+    if(!fb_id && typeof data.friends !== "undefined") {
       socket.emit('guess_no_user', { success: 'Darn' });
       return;
     }

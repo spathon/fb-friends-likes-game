@@ -4,8 +4,10 @@ function PlayCtrl($scope, $rootScope, Facebook, $location, Game, $q, $timeout, s
 
   // Check login status
   Facebook.getLoginStatus(function(response) {
-    socket.emit('FB', response);
+
+    // if logged in start
     if(response.status == 'connected') {
+      socket.emit('FB', response);
       // Start the game
       $scope.me();
       $scope.start();
@@ -65,6 +67,7 @@ function PlayCtrl($scope, $rootScope, Facebook, $location, Game, $q, $timeout, s
 
       // If any like request is undefined retart
       if(_.isUndefined(res[0].data) || _.isUndefined(res[1].data)){
+        console.info('Get likes failed.')
         $scope.start();
         return;
       }
@@ -79,6 +82,7 @@ function PlayCtrl($scope, $rootScope, Facebook, $location, Game, $q, $timeout, s
       // If one of them don't have any likes start over
       // TODO: think if one have 0 use it anyway
       if(Game.friends[0].likes.length == 0 || Game.friends[1].likes.length == 0){
+        console.info('Friend don\'t have any like.')
         return $scope.start();
       }
 
@@ -106,6 +110,7 @@ function PlayCtrl($scope, $rootScope, Facebook, $location, Game, $q, $timeout, s
 
       // If no like was unique restart
       if(!likes.length) {
+        console.info('No unique like!');
         $scope.start();
         break;
       }
@@ -130,6 +135,7 @@ function PlayCtrl($scope, $rootScope, Facebook, $location, Game, $q, $timeout, s
 
     // If no like was found
     if(!$scope.the_like){
+      console.info('No like found.')
       $scope.start();
     }else{
       $timeout($scope.letsPlay, 100, true);
@@ -170,7 +176,9 @@ function PlayCtrl($scope, $rootScope, Facebook, $location, Game, $q, $timeout, s
     // Update the total count
     $scope.guesses.total++;
 
-    $scope.start();
+
+    // Wait for server to answer
+    // $scope.start();
 
     $timeout(function(){
       $rootScope.modalMsg = false;
@@ -186,5 +194,37 @@ function PlayCtrl($scope, $rootScope, Facebook, $location, Game, $q, $timeout, s
       });
     });
   }
+
+
+  // restart the guessing
+  socket.on('guess_cb', function(data){
+    console.info('Guess saved restart.');
+    $scope.start();
+  });
+
+  // Socket failures
+  socket.on('connect_failed', function (data) {
+    console.log('Socket connect_failed: ', data);
+  });
+  socket.on('disconnect', function (data) {
+    console.log('Socket disconnect: ', data);
+    //alert('Connection lost refresh the page...');
+  });
+  socket.on('reconnect_failed', function () {
+    console.log('Socket reconnect_failed: ', data);
+  });
+  socket.on('reconnecting', function () {
+    console.log('Socket reconnecting: ', data);
+  });
+  // Socket success
+  socket.on('connect', function (data) {
+    console.log('Socket connect: ', data);
+  })
+  socket.on('connecting', function (data) {
+    console.log('Socket connecting: ', data);
+  })
+  socket.on('reconnect', function (data) {
+    console.log('Socket reconnect: ', data);
+  })
 
 }
