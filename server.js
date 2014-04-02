@@ -86,6 +86,10 @@ app.get('/partial/play', function *(next){
   yield this.render('partials/play');
 });
 
+app.get('/partial/stats', function *(next){
+  yield this.render('partials/stats');
+});
+
 // API
 // app.get('/stats')
 
